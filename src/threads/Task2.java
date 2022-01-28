@@ -13,7 +13,6 @@ public class Task2 {
 
         List<String> generated = new ArrayList<>(count);
 
-        // TODO 
 
         return generated;
     }

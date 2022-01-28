@@ -39,8 +39,14 @@ public class Task1 {
             threads[i].start();
         }
 
-    return null;
-
+        for (Thread t : threads) {
+            try {
+                t.join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return generated;
     }
 
     private static boolean isInRange(int count, int from, int to) {
