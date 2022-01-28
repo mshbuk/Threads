@@ -11,9 +11,36 @@ public class Task1 {
 
         List<String> generated = new ArrayList<>(count);
 
-        // TODO 
+        Thread[] threads = new Thread[NUM_THREADS];
 
-        return generated;
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(() -> {
+                while (true) {
+                    int number = (int) (Math.random() * (to - from + 1) + from);
+
+                    String kanji = KanjiLib.convert(number);
+
+                    String candidate = String.format("%d,%s", number, kanji);
+
+                    synchronized (generated) {
+                        if (generated.size() < count) {
+
+                            if (!generated.contains(candidate)) {
+                                generated.add(candidate);
+                            }
+
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            });
+
+            threads[i].start();
+        }
+
+    return null;
+
     }
 
     private static boolean isInRange(int count, int from, int to) {
