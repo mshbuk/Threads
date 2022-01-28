@@ -19,10 +19,10 @@ public class Task2 {
         Deque<Integer> container = new ArrayDeque<>(CHANNEL_CAPACITY); //because we are going to change its size later
         AtomicInteger currentCount = new AtomicInteger();
 
-        Thread[] a = new Thread[NUM_THREADS]; //creating 10 thread to generate 10 random numbers
-        Thread[] b = new Thread[NUM_THREADS]; //creating 10 threads to convert them into kanji
+        Thread[] a = new Thread[NUM_THREADS];
+        Thread[] b = new Thread[NUM_THREADS];
 
-        for (int i = 0; i < NUM_THREADS; i++) {
+        for (int i = 0; i < NUM_THREADS; i++) {//creating 10 thread to generate 10 random numbers
             a[i] = new Thread(() -> {
                 while (true) {
                     int number = (int) (Math.random() * (to - from + 1) + from);
@@ -44,7 +44,7 @@ public class Task2 {
                                         currentCount.getAndIncrement();
                                     } else {
                                         container.add(POISON_PILL);
-                                        break;
+                                        break;//stop
                                     }
                                 }
                             }
@@ -53,14 +53,16 @@ public class Task2 {
                 }
             });
             a[i].start();
-            b[i] = new Thread(() -> {
+
+            b[i] = new Thread(() -> {//creating 10 threads to convert them into kanji
                 boolean gotPoison = false;
 
                 while (!gotPoison) {
                     int number;
                     synchronized (container) {
-                        if (container.isEmpty())
+                        if (container.isEmpty()) {
                             continue;
+                        }
                         number = container.poll();
                     }
                         if (number != POISON_PILL) {
@@ -70,11 +72,10 @@ public class Task2 {
                                 generated.add(candidate);
                             }
                         } else {
-                            gotPoison = true;
+                            gotPoison = true; //stop working
                         }
                     }
                 });
-
                 b[i].start();
             }
 
